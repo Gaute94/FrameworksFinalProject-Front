@@ -11,6 +11,7 @@
 <div class="container pt-5" >
     <div class="row pt-5">
         <div class="col-10 offset-1">
+            <h3>Subreddits</h3>
             <div th:if="${subreddits.empty}">
                 <h2>There are no subreddits matching your search.</h2>
             </div>
@@ -30,6 +31,27 @@
                         <td th:text="${subreddit.description}"></td>
                         <td th:text="${subreddit.rules}"></td>
                         <td th:text="${subreddit.owner.getUName()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3>Posts</h3>
+            <div th:if="${!posts.empty}">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Subreddit</th>
+                        <th>Title</th>
+                        <th>Comment</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${posts}">
+                        <td th:text="${post.subreddit.title}"></td>
+                        <td th:text="${post.title}"></td>
+                        <td th:text="${post.comment}"></td>
+                        <td th:text="${post.owner.getUName()}"></td>
                     </tr>
                     </tbody>
                 </table>

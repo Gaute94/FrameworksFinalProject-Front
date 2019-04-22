@@ -38,6 +38,9 @@ public class SubredditController {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         List<Post> posts = postService.getPostBySubreddit(subreddit);
+        Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
+        model.addAttribute("description", subreddit1.getDescription());
+        model.addAttribute("subreddit", subreddit);
         System.out.println("POSTS: " + posts);
         model.addAttribute("posts", posts);
         return "subreddit";
@@ -64,4 +67,6 @@ public class SubredditController {
         subredditService.saveSubreddit(subreddit);
         return "redirect:/home";
     }
+
+
 }

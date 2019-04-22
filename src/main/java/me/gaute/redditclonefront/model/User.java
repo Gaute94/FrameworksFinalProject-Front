@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import me.gaute.redditclonefront.model.Subreddit;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +18,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String role;
+    private List<Subreddit> subreddits;
+    private List<User> following;
 
     public User(String username, String email, String password, String role) {
         this.username = username;

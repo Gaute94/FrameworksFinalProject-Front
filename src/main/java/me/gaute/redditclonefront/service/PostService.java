@@ -75,4 +75,11 @@ public class PostService{
         restTemplate.delete(BASE_URL+"/"+id);
     }
 
+    public List<Post> search(String searchString){
+        String search = searchString.toLowerCase();
+        return getAllPosts().stream().filter(b -> b.getTitle().toLowerCase()
+                .contains(search))
+                .collect(Collectors.toList());
+    }
+
 }

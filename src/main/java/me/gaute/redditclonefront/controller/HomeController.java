@@ -84,7 +84,28 @@ public class HomeController {
     public String searchBook(@RequestParam("title") String title, Model model){
         if(title.equals("")) return "redirect:/home";
         model.addAttribute("subreddits", subredditService.search(title));
+        model.addAttribute("posts", postService.search(title));
 
         return "search";
+    }
+
+    @PostMapping("/subscribe")
+    public String subscribe(@RequestParam String subreddit){
+        System.out.println("ENTERED SUBSCRIBE");
+        System.out.println("SUBREDDIT: " + subreddit);
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(!user.isPresent()){
+            return "redirect:/home";
+        }
+        //User user1 = user.get();
+        Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
+        System.out.println("Subreddit1: " + subreddit1);
+        System.out.println("User subreddits: " + user.get().getSubreddits());
+        System.out.println("User.get ID: " + user.get().getId());
+        System.out.println("USER: " + user);
+        user.get().getSubreddits().add(subreddit1);
+        System.out.println("User subreddits 2: " + user.get().getSubreddits());
+        userService.updateUser(user.get().getId(), user.get());
+        return "redirect:/home";
     }
 }

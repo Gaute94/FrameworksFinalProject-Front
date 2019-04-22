@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
@@ -5,27 +6,31 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Subreddit</title>
 </head>
-<body>
+<body style="background-color:rgb(210, 230, 255)">
 <div th:replace="fragments/header :: header"></div>
 <div class="container">
-    <div class="col-9" style="margin:auto">
-        <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
-        <div th:if="${!posts.isEmpty()}">
-            <table class="table table-bordered">
-                <thead class="thead-light">
-                <tr>
-                    <th>Title</th>
-                    <th>Comment</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <tr th:each="post : ${posts}">
-                    <td th:text="${post.title}"></td>
-                    <td th:text="${post.comment}"></td>
-                </tr>
-                </tbody>
-            </table>
+    <div class="row my-3">
+        <div class="col-md-8">
+            <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
+            <div th:each="post : ${posts}">
+                <div class="bg-white mb-2 rounded">
+                    <div class="font-weight-light small" th:text="'Posted by u/' + ${post.owner.getUName()}"></div>
+                    <h4 th:text="${post.title}"></h4>
+                    <div th:text="${post.comment}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-primary text-white text-center py-2 rounded-top">COMMUNITY DETAILS</div>
+            <div class="text-center py-1 font-weight-bold bg-white " th:text="'r/' + ${subreddit}"></div>
+            <div class="p-2 bg-white" th:text="${description}"></div>
+            <form action="/subscribe" method="post">
+                <input type="hidden" name="subreddit" th:value="${subreddit}">
+                <button type="submit" class="btn btn-primary p-2 bg-white" style="width:100%">Join</button>
+            </form>
+            <div class="p-2 bg-white rounded-bottom">
+                <a class="btn btn-primary" href="../submit" style="width:100%">Create Post</a>
+            </div>
         </div>
     </div>
 </div>

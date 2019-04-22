@@ -12,31 +12,39 @@
 <h1>This is home!</h1>
 
 <div class="container">
-    <div class="col-9" style="margin:auto">
-        <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
-        <div th:if="${!posts.isEmpty()}">
-            <table class="table">
-                <thead class="thead-light">
-                <tr>
-                    <th>Subreddit</th>
-                    <th>Title</th>
-                    <th>Comment</th>
-                    <th>Owner</th>
-                </tr>
-                </thead>
-                <tbody>
+    <div class="row">
+        <div class="col-md-9">
+            <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
+            <div th:if="${!posts.isEmpty()}">
+                <table class="table">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Subreddit</th>
+                        <th>Title</th>
+                        <th>Comment</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                <tr th:each="post : ${posts}">
-                    <td th:text="${post.subreddit.title}"></td>
-                    <td th:text="${post.title}"></td>
-                    <td th:text="${post.comment}"></td>
-                    <td th:text="${post.owner.getUName()}"></td>
-                </tr>
-                </tbody>
-            </table>
+                    <tr th:each="post : ${posts}">
+                        <td th:text="${post.subreddit.title}"></td>
+                        <td th:text="${post.title}"></td>
+                        <td th:text="${post.comment}"></td>
+                        <td th:text="${post.owner.getUName()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h3>Home</h3>
+            <p>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
+            <a class="btn btn-success" th:href="submit" style="width:100%">Create Post</a>
         </div>
     </div>
 </div>
+
 
 </body>
 </html>
