@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Search</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<div class="container pt-5" >
+    <div class="row pt-5">
+        <div class="col-10 offset-1">
+            <div th:if="${subreddits.empty}">
+                <h2>There are no subreddits matching your search.</h2>
+            </div>
+            <div th:if="${!subreddits.empty}">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Rules</th>
+                        <th>Owner</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="subreddit : ${subreddits}">
+                        <td th:text="${subreddit.title}"></td>
+                        <td th:text="${subreddit.description}"></td>
+                        <td th:text="${subreddit.rules}"></td>
+                        <td th:text="${subreddit.owner.getUName()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

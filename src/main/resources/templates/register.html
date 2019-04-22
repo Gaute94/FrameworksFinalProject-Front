@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>Register new User</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="col-sm-6 my-3" style="margin:auto">
+        <h4 class="text-primary">Registration Form</h4>
+        <p th:if="${createAdmin}">
+            First user will get Admin-role.
+        </p>
+        <form th:action="@{/processRegistration}" th:modelAttribute="user" method="post">
+            <div class="form-group">
+                <input type="text" name="username" class="form-control" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="role" class="form-control" value="ROLE_USER" placeholder="roles">
+            </div>
+
+            <button class="btn btn-success" style="width:100%">Save</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

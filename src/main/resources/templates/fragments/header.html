@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragments</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header">
+    <a class="navbar-brand" href="#">Spring Security Demo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Popular</a>
+            </li>
+            <li class="nav-item" th:if="${user != null}">
+            <a class="nav-link" href="myAccount">My Account</a>
+            </li>
+            <li class="nav-item" th:if="${user == null}">
+                <a class="nav-link" href="login">Login</a>
+            </li><li class="nav-item" th:if="${user == null}">
+            <a class="nav-link" href="register">Register</a>
+        </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0 mx-auto" th:action="@{/searching}" method="get">
+            <div class="input-group input-group">
+                <input type="text"  name="title" id="title" class="form-control" placeholder="Search Reddit">
+                <button class="btn btn-success">Search</button>
+            </div>
+        </form>
+            <div th:if="${user != null}">
+                <form class="form-inline my-2 my-lg-0">
+                    <i class="fa fa-user"></i>  <label th:text="${user.getUsername()}">   </label>
+                    <a class="btn btn-outline-secondary my-2 my-sm-0 mx-5"
+                       type="submit"
+                       th:href="@{/logout}">Logout</a>
+                </form>
+            </div>
+    </div>
+    <!-- <input class="form-control mx-auto" style="width:35%" type="text" placeholder="Search Reddit"/> -->
+
+</nav>
+</body>
+</html>
