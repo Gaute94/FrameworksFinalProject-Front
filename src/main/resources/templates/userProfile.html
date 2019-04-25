@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>userProfile</title>
+    <style type="text/css">
+        body{
+            background-color:rgb(210, 230, 255)
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container">
+    <div class="row my-3">
+        <div class="col-md-8">
+            <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
+            <div th:each="post : ${posts}">
+                <div class="bg-white mb-2 rounded">
+                    <div class="font-weight-light small" th:text="'Posted by u/' + ${post.owner.getUName()}"><a th:href="userProfile"></a></div>
+                    <h4 th:text="${post.title}"></h4>
+                    <div th:text="${post.comment}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

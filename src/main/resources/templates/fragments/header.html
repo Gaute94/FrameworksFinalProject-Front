@@ -14,16 +14,20 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" th:href="@{/home}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/r/All}">r/All</a>
             </li>
             <li class="nav-item" th:if="${user != null}">
-            <a class="nav-link" href="myAccount">My Account</a>
+                <a class="nav-link" th:href="@{/myAccount}">My Account</a>
             </li>
             <li class="nav-item" th:if="${user == null}">
                 <a class="nav-link" href="login">Login</a>
-            </li><li class="nav-item" th:if="${user == null}">
-            <a class="nav-link" href="register">Register</a>
-        </li>
+            </li>
+            <li class="nav-item" th:if="${user == null}">
+                <a class="nav-link" href="register">Register</a>
+            </li>
         </ul>
         <form class="form-inline my-2 my-lg-0 mx-auto" th:action="@{/searching}" method="get">
             <div class="input-group input-group">

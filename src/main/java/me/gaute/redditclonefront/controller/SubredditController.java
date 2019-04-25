@@ -37,14 +37,37 @@ public class SubredditController {
     public String subreddit(Model model, @PathVariable String subreddit){
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
-        List<Post> posts = postService.getPostBySubreddit(subreddit);
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
+        model.addAttribute("subreddit1", subreddit1);
+        if(subreddit.equals("All")){
+            List<Post> allPosts = postService.getAllPosts();
+            model.addAttribute("posts", allPosts);
+        }else{
+            List<Post> posts = postService.getPostBySubreddit(subreddit1);
+            model.addAttribute("posts", posts);
+
+        }
+        System.out.println("Subreddit: " + subreddit1);
         model.addAttribute("description", subreddit1.getDescription());
         model.addAttribute("subreddit", subreddit);
-        System.out.println("POSTS: " + posts);
-        model.addAttribute("posts", posts);
         return "subreddit";
     }
+
+    @GetMapping("/u")
+    public String u(Model model){
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "u";
+    }
+
+    @GetMapping("/u/{username}")
+    public String userProfile(Model model, @PathVariable String username){
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        List<Post> posts = postService.getPostByOwner(username);
+        return "userProfile";
+    }
+
 
     @GetMapping("/createSubreddit")
     public String createSubreddit(Model model){

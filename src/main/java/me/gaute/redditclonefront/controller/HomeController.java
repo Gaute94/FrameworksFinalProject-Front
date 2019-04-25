@@ -38,12 +38,29 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(Model model){
-        List<Post> posts = postService.getAllPosts();
-        model.addAttribute("posts", posts);
+        /*List<Post> posts = postService.getAllPosts();
+        model.addAttribute("posts", posts);*/
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
+
+        if(user.isPresent()){
+            List<Subreddit> subreddits = user.get().getSubreddits();
+            model.addAttribute("subreddits", subreddits);
+            List<Post> posts = new ArrayList<>();
+            for(Subreddit subreddit : subreddits){
+                List<Post> subPosts = postService.getPostBySubreddit(subreddit);
+                posts.addAll(subPosts);
+            }
+            model.addAttribute("posts", posts);
+        }else{
+            List<Post> posts = postService.getAllPosts();
+            model.addAttribute("posts", posts);
+            List<Subreddit> subreddits = subredditService.getAllSubreddits();
+            model.addAttribute("subreddits", subreddits);
+        }
+
         System.out.println("user: " + user);
-        model.addAttribute("subreddits", new ArrayList<Subreddit>());
+        //model.addAttribute("subreddits", new ArrayList<Subreddit>());
 
 
         return "home";
@@ -99,6 +116,9 @@ public class HomeController {
         }
         //User user1 = user.get();
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
+        if(user.get().getSubreddits().contains(subreddit1)){
+            return "redirect:/home";
+        }
         System.out.println("Subreddit1: " + subreddit1);
         System.out.println("User subreddits: " + user.get().getSubreddits());
         System.out.println("User.get ID: " + user.get().getId());

@@ -2,6 +2,7 @@ package me.gaute.redditclonefront.service;
 
 
 import me.gaute.redditclonefront.model.Post;
+import me.gaute.redditclonefront.model.Subreddit;
 import me.gaute.redditclonefront.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
@@ -43,12 +44,27 @@ public class PostService{
         }
     }
 
+    public List<Post> getPostBySubreddit(Subreddit subreddit){
+        System.out.println("Subreddit in getPostBySubreddit: " + subreddit);
+        return Arrays.stream(
+                Objects.requireNonNull(restTemplate.getForObject(BASE_URL+"/"+subreddit.getTitle(), Post[].class))
+        ).collect(Collectors.toList());
+    }
+
+    /*
     public List<Post> getPostBySubreddit(String title) {
         System.out.println("getPostBySubreddit Title: " + title);
         String subreddit = title.toLowerCase();
         return getAllPosts().stream().filter(b -> b.getSubreddit().getTitle().toLowerCase()
                 .contains(subreddit))
                 .collect(Collectors.toList());
+    }*/
+
+    public List<Post> getPostByOwner(String owner){
+        String Post = owner.toLowerCase();
+        return getAllPosts().stream().filter(b -> b.getOwner().getUName().toLowerCase()
+            .contains(owner))
+            .collect(Collectors.toList());
     }
 /*
     public String searchBook(@RequestParam("title") String title, Model model){

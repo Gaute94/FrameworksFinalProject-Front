@@ -4,43 +4,46 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Home</title>
+    <style type="text/css">
+        body{
+            background-color:rgb(210, 230, 255)
+        }
+    </style>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
 
-
-<h1>This is home!</h1>
-
 <div class="container">
     <div class="row">
-        <div class="col-md-9">
-            <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
-            <div th:if="${!posts.isEmpty()}">
-                <table class="table">
-                    <thead class="thead-light">
-                    <tr>
-                        <th>Subreddit</th>
-                        <th>Title</th>
-                        <th>Comment</th>
-                        <th>Owner</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <tr th:each="post : ${posts}">
-                        <td th:text="${post.subreddit.title}"></td>
-                        <td th:text="${post.title}"></td>
-                        <td th:text="${post.comment}"></td>
-                        <td th:text="${post.owner.getUName()}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="col-md-8 my-3">
+            <div th:each="post : ${posts}">
+                <div class="bg-white mb-2 rounded">
+                    <a th:href="@{/home}" class="font-weight-bold small" style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
+                    <div class="font-weight-light small" style="display:inline-block">Posted by</div>
+                    <form action="/userProfile" method="post" class="py-2 bg-white" style="display:inline-block">
+                        <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
+                    </form>
+                    <a th:href="@{/home}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
+                    <h4 th:text="${post.title}"></h4>
+                    <div th:text="${post.comment}"></div>
+                </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <h3>Home</h3>
-            <p>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
-            <a class="btn btn-success" th:href="submit" style="width:100%">Create Post</a>
+        <!--<div class="col-md-4 my-3 rounded" >
+            <h3 class="bg-white">Home</h3>
+            <p class="bg-white">Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
+            <a class="btn btn-success px-2 bg-white " th:href="submit" style="width:100%">Create Post</a>
+            <a class="btn btn-success mt-2 bg-white rounded-bottom" th:href="createSubreddit" style="width:100%">Create Community</a>
+        </div>-->
+        <div class="col-md-4 my-3">
+            <div class="bg-primary text-white text-center py-2 rounded-top">HOME</div>
+            <div class="p-2 bg-white">Your personal Reddit frontpage. Come here to check in with your favorite communities.</div>
+            <form action="/createSubreddit" method="get" class="px-2 py-1 bg-white">
+                <button type="submit" class="btn btn-primary" style="width:100%">Create Community</button>
+            </form>
+            <div class="p-2 bg-white rounded-bottom">
+                <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>
+            </div>
         </div>
     </div>
 </div>

@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Subreddit</title>
+    <style type="text/css">
+        body{
+            background-color:rgb(210, 230, 255)
+        }
+    </style>
 </head>
-<body style="background-color:rgb(210, 230, 255)">
+<body>
 <div th:replace="fragments/header :: header"></div>
 <div class="container">
     <div class="row my-3">
@@ -14,7 +19,12 @@
             <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
             <div th:each="post : ${posts}">
                 <div class="bg-white mb-2 rounded">
-                    <div class="font-weight-light small" th:text="'Posted by u/' + ${post.owner.getUName()}"></div>
+                   <a th:href="@{/home}" class="font-weight-bold small" style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
+                    <div class="font-weight-light small" style="display:inline-block">Posted by</div>
+                    <form action="/userProfile" method="post" class="py-2 bg-white" style="display:inline-block">
+                        <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
+                    </form>
+                    <a th:href="@{/home}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
                     <h4 th:text="${post.title}"></h4>
                     <div th:text="${post.comment}"></div>
                 </div>
@@ -24,12 +34,16 @@
             <div class="bg-primary text-white text-center py-2 rounded-top">COMMUNITY DETAILS</div>
             <div class="text-center py-1 font-weight-bold bg-white " th:text="'r/' + ${subreddit}"></div>
             <div class="p-2 bg-white" th:text="${description}"></div>
-            <form action="/subscribe" method="post">
+            <form action="/unsubscribe" method="post" class="px-2 bg-white">
                 <input type="hidden" name="subreddit" th:value="${subreddit}">
-                <button type="submit" class="btn btn-primary p-2 bg-white" style="width:100%">Join</button>
+                <button type="button" class="btn btn-outline-primary mybutton" style="width:100%; " th:if="${user.getSubreddits().contains(subreddit1)}">Leave</button>
+            </form>
+            <form action="/subscribe" method="post" class="px-2 py-1 bg-white">
+                <input type="hidden" name="subreddit" th:value="${subreddit}">
+                <button th:if="!${user.getSubreddits().contains(subreddit1)}" type="submit" class="btn btn-primary" style="width:100%">Join</button>
             </form>
             <div class="p-2 bg-white rounded-bottom">
-                <a class="btn btn-primary" href="../submit" style="width:100%">Create Post</a>
+                <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>
             </div>
         </div>
     </div>
