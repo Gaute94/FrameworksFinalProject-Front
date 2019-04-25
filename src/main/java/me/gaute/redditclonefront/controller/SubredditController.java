@@ -38,6 +38,8 @@ public class SubredditController {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
+        model.addAttribute("subredditTitle", subreddit);
+        System.out.println("SubredditTitle: " + subreddit);
         model.addAttribute("subreddit1", subreddit1);
         if(subreddit.equals("All")){
             List<Post> allPosts = postService.getAllPosts();

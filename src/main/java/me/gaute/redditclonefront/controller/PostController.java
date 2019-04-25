@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -52,5 +53,22 @@ public class PostController {
         post.setOwner(user1.get());
         postService.savePost(post);
         return "redirect:/home";
+    }
+
+    @PostMapping("/vote/{id}")
+    public String downvote(Model model, @PathVariable String id, @RequestParam String subreddit, @RequestParam String vote){
+        long id1 = Long.parseLong(id);
+        Optional<Post> post = postService.getPostById(id1);
+        model.addAttribute("subreddit", subreddit);
+        System.out.println("PostDownvote Subreddit: " + subreddit);
+        if(post.isPresent()){
+            if(vote.equals("downvote")) {
+                post.get().setLikes(post.get().getLikes() - 1);
+            }else{
+                post.get().setLikes(post.get().getLikes()+1);
+            }
+            postService.updatePost(id1, post.get());
+        }
+        return "redirect:/r/" + subreddit;
     }
 }

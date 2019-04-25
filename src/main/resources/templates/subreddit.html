@@ -4,10 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Subreddit</title>
     <style type="text/css">
         body{
             background-color:rgb(210, 230, 255)
+        }
+        .upvote:hover{
+            color:green;
+        }
+
+        .downvote:hover{
+            color:red;
         }
     </style>
 </head>
@@ -15,13 +23,32 @@
 <div th:replace="fragments/header :: header"></div>
 <div class="container">
     <div class="row my-3">
-        <div class="col-md-8">
+        <div class="col-md-8 ">
             <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
-            <div th:each="post : ${posts}">
-                <div class="bg-white mb-2 rounded">
+            <div th:each="post : ${posts}" class="d-flex flex-nowrap bg-white my-2 rounded">
+                <div style="width:40px;">
+                    <span style="display:block; width:100%" class="text-align-center " >
+                         <form th:action="@{'/vote/' + ${post.id}}" method="post">
+                            <input type="hidden" name="subreddit" th:value="${subredditTitle}">
+                            <input type="hidden" name="vote" th:value="upvote">
+                            <button type="submit" class="btn bg-white upvote" style="width:100%"><i class="fas fa-angle-up"></i></button>
+                         </form>
+                    </span>
+                    <span style="width:100%; display:block" class="text-align-center ">
+                        <div th:text="${post.likes}" style="width:100%; text-align:center"></div>
+                    </span>
+                    <span style="display:block;" class="text-align-center">
+                        <form th:action="@{'/vote/' + ${post.id}}" method="post">
+                            <input type="hidden" name="subreddit" th:value="${subredditTitle}">
+                            <input type="hidden" name="vote" th:value="downvote">
+                            <button type="submit" class="btn bg-white downvote" style="width:100%"><i class="fas fa-angle-down"></i></button>
+                        </form>
+                    </span>
+                </div>
+                <div class=" mb-2 rounded flex-grow-1 pl-2" >
                    <a th:href="@{/home}" class="font-weight-bold small" style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
                     <div class="font-weight-light small" style="display:inline-block">Posted by</div>
-                    <form action="/userProfile" method="post" class="py-2 bg-white" style="display:inline-block">
+                    <form action="/userProfile" method="post" style="display:inline-block">
                         <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
                     </form>
                     <a th:href="@{/home}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
@@ -30,9 +57,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="bg-primary text-white text-center py-2 rounded-top">COMMUNITY DETAILS</div>
-            <div class="text-center py-1 font-weight-bold bg-white " th:text="'r/' + ${subreddit}"></div>
+        <div class="col-md-4 rounded" th:if="${user != null}">
+            <div class="bg-primary text-white text-center py-2 ">COMMUNITY DETAILS</div>
+            <div class="text-center py-1 font-weight-bold bg-white  " th:text="'r/' + ${subreddit}"></div>
             <div class="p-2 bg-white" th:text="${description}"></div>
             <form action="/unsubscribe" method="post" class="px-2 bg-white">
                 <input type="hidden" name="subreddit" th:value="${subreddit}">
@@ -41,6 +68,16 @@
             <form action="/subscribe" method="post" class="px-2 py-1 bg-white">
                 <input type="hidden" name="subreddit" th:value="${subreddit}">
                 <button th:if="!${user.getSubreddits().contains(subreddit1)}" type="submit" class="btn btn-primary" style="width:100%">Join</button>
+            </form>
+            <div class="p-2 bg-white rounded-bottom">
+                <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>
+            </div>
+        </div>
+        <div class="col-md-4 my-3 rounded" th:if="${user == null}">
+            <div class="text-center py-1 font-weight-bold bg-white " th:text="'r/' + ${subreddit}"></div>
+            <div class="p-2 bg-white" th:text="${description}"></div>
+            <form action="/createSubreddit" method="get" class="px-2 py-1 bg-white">
+                <button type="submit" class="btn btn-primary" style="width:100%">Create Community</button>
             </form>
             <div class="p-2 bg-white rounded-bottom">
                 <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>
