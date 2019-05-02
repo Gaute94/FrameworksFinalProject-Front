@@ -61,9 +61,9 @@ public class PostService{
     }*/
 
     public List<Post> getPostByOwner(String owner){
-        String Post = owner.toLowerCase();
+        String post = owner.toLowerCase();
         return getAllPosts().stream().filter(b -> b.getOwner().getUName().toLowerCase()
-            .contains(owner))
+            .contains(post))
             .collect(Collectors.toList());
     }
 /*

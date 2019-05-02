@@ -19,6 +19,7 @@
         <p th:if="${createAdmin}">
             First user will get Admin-role.
         </p>
+        <p th:if="${exists != null}" th:text="${exists}"></p>
         <form th:action="@{/processRegistration}" th:modelAttribute="user" method="post">
             <div class="form-group">
                 <input type="text" name="username" class="form-control" placeholder="Username">

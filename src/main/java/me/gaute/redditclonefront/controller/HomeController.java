@@ -9,12 +9,10 @@ import me.gaute.redditclonefront.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,11 +47,13 @@ public class HomeController {
             List<Post> posts = new ArrayList<>();
             for(Subreddit subreddit : subreddits){
                 List<Post> subPosts = postService.getPostBySubreddit(subreddit);
+                Collections.reverse(subPosts);
                 posts.addAll(subPosts);
             }
             model.addAttribute("posts", posts);
         }else{
             List<Post> posts = postService.getAllPosts();
+            Collections.reverse(posts);
             model.addAttribute("posts", posts);
             List<Subreddit> subreddits = subredditService.getAllSubreddits();
             model.addAttribute("subreddits", subreddits);
@@ -75,14 +75,29 @@ public class HomeController {
         return "register";
     }
 
+    @GetMapping("/register/exists")
+    public String register(Model model){
+        model.addAttribute("createAdmin", userService.countUsers() == 0);
+        System.out.println("Entered register");
+        String exists = "Already a user with that username or email address";
+        model.addAttribute("exists", exists);
+        System.out.println("exists: " + exists);
+        return "register";
+    }
+
     @PostMapping("/processRegistration")
     public String register(@ModelAttribute("user") User user){
         userService.setPassword(user, user.getPassword());
         if(userService.countUsers() == 0){
             user.setRole("ROLE_ADMIN");
         }
-        userService.saveUser(user);
-        return "redirect:/home";
+        if(userService.saveUser(user).isOk()){
+            return "redirect:/home";
+        }else{
+
+            return "redirect:/register/exists";
+        }
+
     }
 
     @GetMapping("/login")
@@ -92,7 +107,19 @@ public class HomeController {
     }
 
     @GetMapping("/myAccount")
-    public String myAccount(){
+    public String myAccount(Model model){
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(!user.isPresent()){
+            return "redirect:/home";
+        }
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        model.addAttribute("username", user.get().getUName());
+        System.out.println("USERNAME: " + user.get().getUsername());
+        List<Post> posts = postService.getPostByOwner(user.get().getUsername());
+        Collections.reverse(posts);
+        model.addAttribute("posts", posts);
+        List<User> following = user.get().getFollowing();
+        model.addAttribute("following", following);
         return "myAccount";
     }
 
@@ -104,6 +131,23 @@ public class HomeController {
         model.addAttribute("posts", postService.search(title));
 
         return "search";
+    }
+
+    @PostMapping("/follow")
+    public String follow(@RequestParam String username){
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(!user.isPresent()){
+            return "redirect:/home";
+        }
+
+        User user1 = userService.getUserByUsername(username);
+        if(user.get().getFollowing().contains(user1)){
+            return "redirect:/home";
+        }
+
+        user.get().getFollowing().add(user1);
+        userService.updateUser(user.get().getId(), user.get());
+        return "redirect:/home";
     }
 
     @PostMapping("/subscribe")

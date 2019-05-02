@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,9 +29,11 @@ public class SubredditController {
     PostService postService;
 
     @GetMapping("/r")
-    public String r(Model model){
+    public String r(Model model) {
         List<Subreddit> subreddits = subredditService.getAllSubreddits();
         model.addAttribute("subreddits", subreddits);
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
         return "r";
     }
 
@@ -43,9 +47,11 @@ public class SubredditController {
         model.addAttribute("subreddit1", subreddit1);
         if(subreddit.equals("All")){
             List<Post> allPosts = postService.getAllPosts();
+            Collections.reverse(allPosts);
             model.addAttribute("posts", allPosts);
         }else{
             List<Post> posts = postService.getPostBySubreddit(subreddit1);
+            Collections.reverse(posts);
             model.addAttribute("posts", posts);
 
         }
@@ -67,8 +73,16 @@ public class SubredditController {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         List<Post> posts = postService.getPostByOwner(username);
+        model.addAttribute("posts", posts);
+        model.addAttribute("username", username);
+        System.out.println("username: " + username);
+        for(Post post : posts){
+            System.out.println("Title" + post.getTitle());
+            System.out.println("Owner" + post.getOwner());
+        }
         return "userProfile";
     }
+
 
 
     @GetMapping("/createSubreddit")

@@ -15,8 +15,63 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-9">
-
+        <div class="col-md-8 ">
+            <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
+            <div th:each="post : ${posts}" class="d-flex flex-nowrap bg-white my-2 rounded">
+                <div style="width:40px;">
+                    <span style="display:block; width:100%" class="text-align-center " >
+                         <form th:action="@{'/vote/' + ${post.id}}" method="post">
+                            <input type="hidden" name="home" th:value="subreddit">
+                            <input type="hidden" name="subreddit" th:value="${subredditTitle}">
+                            <input type="hidden" name="vote" th:value="upvote">
+                            <button type="submit" class="btn bg-white upvote" style="width:100%"><i class="fas fa-angle-up"></i></button>
+                         </form>
+                    </span>
+                    <span style="width:100%; display:block" class="text-align-center ">
+                        <div th:text="${post.likes}" style="width:100%; text-align:center"></div>
+                    </span>
+                    <span style="display:block;" class="text-align-center">
+                        <form th:action="@{'/vote/' + ${post.id}}" method="post">
+                            <input type="hidden" name="home" th:value="subreddit">
+                            <input type="hidden" name="subreddit" th:value="${subredditTitle}">
+                            <input type="hidden" name="vote" th:value="downvote">
+                            <button type="submit" class="btn bg-white downvote" style="width:100%"><i class="fas fa-angle-down"></i></button>
+                        </form>
+                    </span>
+                </div>
+                <div class="mb-2 rounded flex-grow-1 pl-2" >
+                    <a th:href="@{'/r/' + ${post.subreddit.getTitle()}}" class="font-weight-bold small" style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
+                    <div class="font-weight-light small" style="display:inline-block">Posted by</div>
+                    <!--<form th:action="@{'/u/' + ${post.owner.getUName()}}" method="get" style="display:inline-block">
+                        <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
+                        <input type="submit" class="btn btn-outline-primary" th:text="${post.owner.getUName()}">
+                    </form>-->
+                    <a th:href="@{'/u/' + ${post.owner.getUName()}}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
+                    <h4 th:text="${post.title}"></h4>
+                    <span th:text="${post.comment}" style="word-wrap:normal; width:100%; max-width:100%" ></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 my-2 rounded bg-white p-0" th:if="${user != null}">
+            <div class="bg-primary text-white text-center py-2 " th:text="'u/' + ${username}"></div>
+            <!--<div class="text-center py-1 font-weight-bold bg-white  " ></div>-->
+            <span class="p-2">Following:</span>
+            <div th:each="follow : ${following}" class="d-flex flex-nowrap bg-white my-2 rounded p-2">
+                <a th:href="@{'/u/' + ${follow.getUName()}}" th:text="${follow.getUName()}"></a>
+            </div>
+            <div class="p-2 bg-white rounded-bottom">
+                <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>
+            </div>
+        </div>
+        <div class="col-md-4 my-2 rounded" th:if="${user == null}">
+            <div class="text-center py-2 font-weight-bold bg-primary text-white rounded-top" th:text="'u/' + ${username}"></div>
+            <div class="p-2 bg-white" th:text="${description}"></div>
+            <form action="/createSubreddit" method="get" class="px-2 py-1 bg-white">
+                <button type="submit" class="btn btn-primary" style="width:100%">Create Community</button>
+            </form>
+            <div class="p-2 bg-white rounded-bottom">
+                <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>
+            </div>
         </div>
     </div>
 </div>

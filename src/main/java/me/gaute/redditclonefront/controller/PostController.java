@@ -56,7 +56,7 @@ public class PostController {
     }
 
     @PostMapping("/vote/{id}")
-    public String downvote(Model model, @PathVariable String id, @RequestParam String subreddit, @RequestParam String vote){
+    public String downvote(Model model, @PathVariable String id, @RequestParam String subreddit, @RequestParam String vote, @RequestParam String home){
         long id1 = Long.parseLong(id);
         Optional<Post> post = postService.getPostById(id1);
         model.addAttribute("subreddit", subreddit);
@@ -69,6 +69,11 @@ public class PostController {
             }
             postService.updatePost(id1, post.get());
         }
-        return "redirect:/r/" + subreddit;
+
+        if(home.equals("home")){
+            return "redirect:/home";
+        }else{
+            return "redirect:/r/" + subreddit;
+        }
     }
 }

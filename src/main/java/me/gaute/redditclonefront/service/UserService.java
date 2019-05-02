@@ -1,5 +1,6 @@
 package me.gaute.redditclonefront.service;
 
+import me.gaute.redditclonefront.model.SaveUserResponse;
 import me.gaute.redditclonefront.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
@@ -23,10 +24,18 @@ public class UserService implements UserDetailsService{
 
     String BASE_URL = "http://localhost:9003/users";
     private RestTemplate restTemplate = new RestTemplate();
-    @Override
+    /*@Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = Optional.ofNullable(restTemplate.getForObject(BASE_URL+"/email/"+email, User.class));
         if(!user.isPresent()) throw new UsernameNotFoundException("Not found user with username: " + email);
+        return user.get();
+    }
+   */
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = Optional.ofNullable(restTemplate.getForObject(BASE_URL+"/username/"+username, User.class));
+        if(!user.isPresent()) throw new UsernameNotFoundException("Not found user with username: " + username);
         return user.get();
     }
 
@@ -49,8 +58,12 @@ public class UserService implements UserDetailsService{
         return restTemplate.getForObject(BASE_URL+"/email/"+email, User.class);
     }
 
-    public User saveUser(User newUser){
-        return restTemplate.postForObject(BASE_URL, newUser, User.class);
+    public User getUserByUsername(String username){
+        return restTemplate.getForObject(BASE_URL+"/username/"+username, User.class);
+    }
+
+    public SaveUserResponse saveUser(User newUser){
+        return restTemplate.postForObject(BASE_URL, newUser, SaveUserResponse.class);
     }
 
     public void updateUser(long id, User updatedUser){
@@ -74,7 +87,7 @@ public class UserService implements UserDetailsService{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Auth: " + auth);
         System.out.println("Name: " + auth.getName());
-        return Optional.ofNullable(getUserByEmail(auth.getName()));
+        return Optional.ofNullable(getUserByUsername(auth.getName()));
     }
 
     @Bean

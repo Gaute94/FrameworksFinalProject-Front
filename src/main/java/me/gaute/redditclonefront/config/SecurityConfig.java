@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/", "/login", "/register", "signup", "/processRegistration", "/h2-console/**", "/home", "/r", "/r/**", "/search", "/searching").permitAll()
+                .antMatchers("/", "/login", "/register", "/register/**", "signup", "/processRegistration", "/h2-console/**", "/home", "/r", "/r/**", "/search", "/searching", "/u", "/u/**").permitAll()
                 .antMatchers("/myAccount", "/submit", "/createSubreddit", "/subscribe", "/downvote", "/downvote/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
