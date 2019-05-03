@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Password</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container">
+    <div class="row my-6">
+        <div class="col-sm-6 my-5" style="margin:auto">
+            <h4>Are you sure you want to delete your account?</h4>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-sm-6" style="margin:auto">
+            <form method="post" th:action="@{/accountDelete}">
+                <input type="hidden" name="confirmed" value="true">
+                <button type="submit" class="btn btn-success " style="width:100%">Yes</button>
+            </form>
+        </div>
+        <div class="col-sm-6" style="margin:auto">
+            <a href="/myAccount" class="btn btn-danger" style="width:100%">No</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

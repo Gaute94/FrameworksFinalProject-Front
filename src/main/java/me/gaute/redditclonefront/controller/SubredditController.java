@@ -55,6 +55,15 @@ public class SubredditController {
             model.addAttribute("posts", posts);
 
         }
+        boolean subscribed = false;
+        if(user.isPresent()) {
+            if (user.get().getSubreddits().contains(subreddit1)) {
+                subscribed = true;
+            }else{
+                subscribed = false;
+            }
+        }
+        model.addAttribute("subscribed", subscribed);
         System.out.println("Subreddit: " + subreddit1);
         model.addAttribute("description", subreddit1.getDescription());
         model.addAttribute("subreddit", subreddit);
@@ -71,7 +80,21 @@ public class SubredditController {
     @GetMapping("/u/{username}")
     public String userProfile(Model model, @PathVariable String username){
         Optional<User> user = userService.getAuthenticatedUser();
+        boolean followed = false;
+        if(user.isPresent()){
+            if(username.equals(user.get().getUsername())){
+                return "redirect:/myAccount";
+            }
+            if(user.get().getFollowing().contains(userService.getUserByUsername(username))){
+                followed = true;
+            }else{
+                followed=false;
+            }
+
+        }
+        model.addAttribute("followed", followed);
         user.ifPresent(user1 -> model.addAttribute("user", user1));
+
         List<Post> posts = postService.getPostByOwner(username);
         model.addAttribute("posts", posts);
         model.addAttribute("username", username);
@@ -81,6 +104,16 @@ public class SubredditController {
             System.out.println("Owner" + post.getOwner());
         }
         return "userProfile";
+    }
+
+    @PostMapping("/unfollow/{username}")
+    public String unfollow(@PathVariable String username){
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(user.isPresent()){
+            user.get().getFollowing().remove(userService.getUserByUsername(username));
+            userService.updateUser(user.get().getId(), user.get());
+        }
+        return "redirect:/u/" + username;
     }
 
 

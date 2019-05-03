@@ -59,11 +59,11 @@
             <div class="bg-primary text-white text-center py-2 " th:text="'u/' + ${username}"></div>
             <!--<div class="text-center py-1 font-weight-bold bg-white  " ></div>-->
             <div class="p-2 bg-white" th:text="${description}"></div>
-            <form action="/unfollow" method="post" class="px-2 bg-white">
+            <form th:action="@{'/unfollow/' + ${username}}" method="post" th:if="${followed}" class="px-2 bg-white">
                 <input type="hidden" name="username" th:value="${username}">
-                <button type="button" class="btn btn-outline-primary mybutton" style="width:100%; " th:if="${user.getFollowing().contains(user1)}">Unfollow</button>
+                <button type="submit" class="btn btn-outline-primary mybutton" style="width:100%; ">Unfollow</button>
             </form>
-            <form action="/follow" method="post" class="px-2 py-1 bg-white">
+            <form action="/follow" method="post" th:if="${!followed}" class="px-2 py-1 bg-white">
                 <input type="hidden" name="username" th:value="${username}">
                 <button th:if="!${user.getFollowing().contains(user1)}" type="submit" class="btn btn-primary" style="width:100%">Follow</button>
             </form>

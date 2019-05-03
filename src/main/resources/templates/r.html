@@ -16,7 +16,7 @@
 <div class="container">
     <div class="col-9" style="margin:auto">
         <div th:if="${subreddits.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no subreddits available.</div>
-        <div th:if="${!subreddits.isEmpty()}">
+        <div th:if="${!subreddits.isEmpty()}" class="bg-white">
             <table class="table table-bordered">
                 <thead class="thead-light">
                 <tr>

@@ -67,13 +67,13 @@
             <div class="bg-primary text-white text-center py-2 ">COMMUNITY DETAILS</div>
             <div class="text-center py-1 font-weight-bold bg-white  " th:text="'r/' + ${subreddit}"></div>
             <div class="p-2 bg-white" th:text="${description}"></div>
-            <form action="/unsubscribe" method="post" class="px-2 bg-white">
+            <form th:action="@{/unsubscribe}" method="post" class="px-2 bg-white" th:if="${subscribed}">
                 <input type="hidden" name="subreddit" th:value="${subreddit}">
-                <button type="button" class="btn btn-outline-primary mybutton" style="width:100%; " th:if="${user.getSubreddits().contains(subreddit1)}">Leave</button>
+                <button type="submit" class="btn btn-outline-primary mybutton" style="width:100%;}">Leave</button>
             </form>
-            <form action="/subscribe" method="post" class="px-2 py-1 bg-white">
+            <form action="/subscribe" method="post" class="px-2 py-1 bg-white" th:if="${!subscribed}">
                 <input type="hidden" name="subreddit" th:value="${subreddit}">
-                <button th:if="!${user.getSubreddits().contains(subreddit1)}" type="submit" class="btn btn-primary" style="width:100%">Join</button>
+                <button type="submit" class="btn btn-primary" style="width:100%">Join</button>
             </form>
             <div class="p-2 bg-white rounded-bottom">
                 <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>

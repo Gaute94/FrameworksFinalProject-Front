@@ -123,6 +123,41 @@ public class HomeController {
         return "myAccount";
     }
 
+    @GetMapping("/changePassword")
+    public String changePassword(Model model){
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        return "changePassword";
+    }
+
+    @PostMapping("/passwordChange")
+    public String passwordChange(@RequestParam String password){
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(!user.isPresent()){
+            return "redirect:/myAccount";
+        }else{
+        userService.setPassword(user.get(), password);
+        userService.updateUser(user.get().getId(), user.get());
+        }
+        return "redirect:/myAccount";
+    }
+
+    @GetMapping("/deleteAccount")
+    public String deleteAccount(Model model){
+        return "deleteAccount";
+    }
+
+    @PostMapping("/accountDelete")
+    public String accountDelete(@RequestParam String confirmed){
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(!confirmed.equals("true") || !user.isPresent()){
+            return "redirect:/myAccount";
+        }else {
+            userService.deleteUserById(user.get().getId());
+            return "redirect:/logout";
+        }
+    }
+
 
     @GetMapping("/searching")
     public String searchBook(@RequestParam("title") String title, Model model){
@@ -147,7 +182,7 @@ public class HomeController {
 
         user.get().getFollowing().add(user1);
         userService.updateUser(user.get().getId(), user.get());
-        return "redirect:/home";
+        return "redirect:/u/" + username;
     }
 
     @PostMapping("/subscribe")
@@ -170,6 +205,16 @@ public class HomeController {
         user.get().getSubreddits().add(subreddit1);
         System.out.println("User subreddits 2: " + user.get().getSubreddits());
         userService.updateUser(user.get().getId(), user.get());
-        return "redirect:/home";
+        return "redirect:/r/" + subreddit;
+    }
+
+    @PostMapping("/unsubscribe")
+    public String unsubscribe(@RequestParam String subreddit){
+        Optional<User> user = userService.getAuthenticatedUser();
+        if(user.isPresent()){
+            user.get().getSubreddits().remove(subredditService.getSubredditByTitle(subreddit));
+            userService.updateUser(user.get().getId(), user.get());
+        }
+        return "redirect:/r/" + subreddit;
     }
 }
