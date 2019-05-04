@@ -24,7 +24,7 @@
                             <input type="hidden" name="home" th:value="home">
                             <input type="hidden" name="subreddit" th:value="${post.subreddit.getTitle()}">
                             <input type="hidden" name="vote" th:value="upvote">
-                            <button type="submit" class="btn bg-white upvote" style="width:100%"><i class="fas fa-angle-up"></i></button>
+                            <button type="submit" class="btn bg-white upvote" style="width:100%" th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-up"></i></button>
                          </form>
                     </span>
                     <span style="width:100%; display:block" class="text-align-center ">
@@ -35,7 +35,7 @@
                             <input type="hidden" name="home" th:value="home">
                             <input type="hidden" name="subreddit" th:value="${post.subreddit.getTitle()}">
                             <input type="hidden" name="vote" th:value="downvote">
-                            <button type="submit" class="btn bg-white downvote" style="width:100%"><i class="fas fa-angle-down"></i></button>
+                            <button type="submit" class="btn bg-white downvote" style="width:100%" th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-down"></i></button>
                         </form>
                     </span>
                 </div>
@@ -45,8 +45,7 @@
                     <form action="/userProfile" method="post" class="py-2 bg-white" style="display:inline-block">
                         <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
                     </form>
-                    <a th:href="@{'/u/' + ${post.owner.getUName()}}
-" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
+                    <a th:href="@{'/u/' + ${post.owner.getUName()}}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
                     <h4 th:text="${post.title}"></h4>
                     <div th:text="${post.comment}"></div>
                 </div>

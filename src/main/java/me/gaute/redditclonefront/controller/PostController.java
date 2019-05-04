@@ -30,7 +30,7 @@ public class PostController {
     UserService userService;
 
     @GetMapping("/submit")
-    public String submit(Model model){
+    public String submit(Model model) {
         List<Subreddit> subreddits = subredditService.getAllSubreddits();
         model.addAttribute("subreddits", subreddits);
         Optional<User> user = userService.getAuthenticatedUser();
@@ -43,7 +43,7 @@ public class PostController {
         System.out.println("SUBREDDIT: " + subreddit);
         Optional<User> user1 = userService.getUserById(user);
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
-        if(!user1.isPresent()){
+        if (!user1.isPresent()) {
             return "redirect:/home";
         }
         Post post = new Post();
@@ -56,23 +56,26 @@ public class PostController {
     }
 
     @PostMapping("/vote/{id}")
-    public String downvote(Model model, @PathVariable String id, @RequestParam String subreddit, @RequestParam String vote, @RequestParam String home){
+    public String downvote(Model model, @PathVariable String id, @RequestParam String subreddit, @RequestParam String vote, @RequestParam String home) {
         long id1 = Long.parseLong(id);
         Optional<Post> post = postService.getPostById(id1);
         model.addAttribute("subreddit", subreddit);
         System.out.println("PostDownvote Subreddit: " + subreddit);
-        if(post.isPresent()){
-            if(vote.equals("downvote")) {
+        Optional<User> user = userService.getAuthenticatedUser();
+
+        if (post.isPresent() && user.isPresent() && !post.get().getUserLikes().contains(user.get())) {
+            if (vote.equals("downvote")) {
+                post.get().getUserLikes().add(user.get());
                 post.get().setLikes(post.get().getLikes() - 1);
-            }else{
-                post.get().setLikes(post.get().getLikes()+1);
+            } else {
+                post.get().getUserLikes().add(user.get());
+                post.get().setLikes(post.get().getLikes() + 1);
             }
             postService.updatePost(id1, post.get());
         }
-
-        if(home.equals("home")){
+        if (home.equals("home")) {
             return "redirect:/home";
-        }else{
+        } else {
             return "redirect:/r/" + subreddit;
         }
     }
