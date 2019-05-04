@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/", "/login", "/register", "/register/**", "signup", "/processRegistration", "/h2-console/**", "/home", "/r", "/r/**", "/search", "/searching", "/u", "/u/**").permitAll()
                 .antMatchers("/myAccount", "/changePassword", "/passwordChange", "/deleteAccount", "/accountDelete", "/submit", "/createSubreddit", "/subscribe", "/unsubscribe", "/unfollow/**", "/downvote", "/downvote/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/users").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

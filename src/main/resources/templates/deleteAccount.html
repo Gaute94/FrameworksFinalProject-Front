@@ -18,6 +18,14 @@
     <div class="row my-2">
         <div class="col-sm-6" style="margin:auto">
             <form method="post" th:action="@{/accountDelete}">
+                <div class="form-group" th:if="${user.role == 'ROLE_ADMIN'}">
+                    <select type="text" name="username" class="form-control">
+                        <option th:value="${username}" th:text="${username}"></option>
+                    </select>
+                </div>
+                <div class="form-group" th:if="${!(user.role == 'ROLE_ADMIN')}">
+                    <input type="hidden" name="username" class="form-control" th:value="${user.getUsername()}">
+                </div>
                 <input type="hidden" name="confirmed" value="true">
                 <button type="submit" class="btn btn-success " style="width:100%">Yes</button>
             </form>

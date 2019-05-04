@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class SubredditService{
 
-    String BASE_URL = "http://localhost:9003/subreddits";
+    private String BASE_URL = "http://localhost:9003/subreddits";
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<Subreddit> getAllSubreddits(){
@@ -58,9 +58,10 @@ public class SubredditService{
         return subreddits.size();
     }
 
+    /*
     public void deleteSubredditByTitle(String title){
         restTemplate.delete(BASE_URL+"/"+title);
-    }
+    }*/
 
     public List<Subreddit> search(String searchString){
         String search = searchString.toLowerCase();

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class PostService{
 
-    String BASE_URL = "http://localhost:9003/posts";
+    private String BASE_URL = "http://localhost:9003/posts";
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<Post> getAllPosts(){
@@ -87,9 +87,10 @@ public class PostService{
         return posts.size();
     }
 
+    /*
     public void deletePostById(long id){
         restTemplate.delete(BASE_URL+"/"+id);
-    }
+    }*/
 
     public List<Post> search(String searchString){
         String search = searchString.toLowerCase();

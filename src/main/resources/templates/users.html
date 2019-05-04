@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>Users</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<div class="container">
+    <div class="col-9" style="margin:auto">
+        <div th:if="${users.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no subreddits available.</div>
+        <div th:if="${!users.isEmpty()}" class="bg-white">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.getId()}"></td>
+                    <td th:text="${user.getUsername()}"></td>
+                    <td th:text="${user.getEmail()}"></td>
+                    <td>
+                        <form th:action="@{/changePassword}" method="post">
+                            <input type="hidden" name="username" th:value="${user.getUsername()}">
+                            <button type="submit" class="btn btn-success">Change Password</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:action="@{/deleteAccount}" method="post">
+                            <input type="hidden" name="username" th:value="${user.getUsername()}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

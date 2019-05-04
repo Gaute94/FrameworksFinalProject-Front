@@ -3,6 +3,7 @@ package me.gaute.redditclonefront.controller;
 import me.gaute.redditclonefront.model.Post;
 import me.gaute.redditclonefront.model.Subreddit;
 import me.gaute.redditclonefront.model.User;
+import me.gaute.redditclonefront.service.DeleteService;
 import me.gaute.redditclonefront.service.PostService;
 import me.gaute.redditclonefront.service.SubredditService;
 import me.gaute.redditclonefront.service.UserService;
@@ -28,6 +29,8 @@ public class HomeController {
     @Autowired
     SubredditService subredditService;
 
+    @Autowired
+    DeleteService deleteService;
 
     @GetMapping("/")
     public String slash(){
@@ -130,31 +133,52 @@ public class HomeController {
         return "changePassword";
     }
 
-    @PostMapping("/passwordChange")
-    public String passwordChange(@RequestParam String password){
+    @PostMapping("/changePassword")
+    public String changePassword(Model model, @RequestParam String username){
         Optional<User> user = userService.getAuthenticatedUser();
-        if(!user.isPresent()){
-            return "redirect:/myAccount";
-        }else{
-        userService.setPassword(user.get(), password);
-        userService.updateUser(user.get().getId(), user.get());
-        }
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        model.addAttribute("username", username);
+        return "changePassword";
+    }
+
+    @PostMapping("/passwordChange")
+    public String passwordChange(@RequestParam String password, @RequestParam String username){
+        User user = userService.getUserByUsername(username);
+        userService.setPassword(user, password);
+        userService.updateUser(user.getId(), user);
+
         return "redirect:/myAccount";
     }
 
+
     @GetMapping("/deleteAccount")
     public String deleteAccount(Model model){
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        if(user.isPresent()){
+            System.out.println("ROLE: " + user.get().getRole());
+        }
+        return "deleteAccount";
+    }
+
+    @PostMapping("/deleteAccount")
+    public String deleteAccount(Model model, @RequestParam String username){
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        model.addAttribute("username", username);
         return "deleteAccount";
     }
 
     @PostMapping("/accountDelete")
-    public String accountDelete(@RequestParam String confirmed){
-        Optional<User> user = userService.getAuthenticatedUser();
-        if(!confirmed.equals("true") || !user.isPresent()){
+    public String accountDelete(@RequestParam String confirmed, @RequestParam String username){
+        User user = userService.getUserByUsername(username);
+        System.out.println("DELETE user: " + userService.getUserByUsername(username));
+        System.out.println("DELETE user ID: " + user.getId());
+        if(!confirmed.equals("true")){
             return "redirect:/myAccount";
         }else {
-            userService.deleteUserById(user.get().getId());
-            return "redirect:/logout";
+            deleteService.deleteUserByUsername(username);
+            return "redirect:/home";
         }
     }
 
@@ -216,5 +240,15 @@ public class HomeController {
             userService.updateUser(user.get().getId(), user.get());
         }
         return "redirect:/r/" + subreddit;
+    }
+
+    @GetMapping("/users")
+    public String users(Model model){
+        Optional<User> authUser = userService.getAuthenticatedUser();
+        authUser.ifPresent(user1 -> model.addAttribute("authUser", user1));
+
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "users";
     }
 }

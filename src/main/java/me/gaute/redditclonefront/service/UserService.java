@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService{
 
-    String BASE_URL = "http://localhost:9003/users";
+    private String BASE_URL = "http://localhost:9003/users";
     private RestTemplate restTemplate = new RestTemplate();
     /*@Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -75,9 +75,10 @@ public class UserService implements UserDetailsService{
         return users.size();
     }
 
+    /*
     public void deleteUserById(long id){
         restTemplate.delete(BASE_URL+"/"+id);
-    }
+    }*/
 
     public void setPassword(User user, String password){
         user.setPassword(passwordEncoder().encode(password));
