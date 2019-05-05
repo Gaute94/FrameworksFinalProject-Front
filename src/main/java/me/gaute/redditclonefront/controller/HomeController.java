@@ -1,21 +1,19 @@
 package me.gaute.redditclonefront.controller;
 
+import me.gaute.redditclonefront.model.Image;
 import me.gaute.redditclonefront.model.Post;
 import me.gaute.redditclonefront.model.Subreddit;
 import me.gaute.redditclonefront.model.User;
-import me.gaute.redditclonefront.service.DeleteService;
-import me.gaute.redditclonefront.service.PostService;
-import me.gaute.redditclonefront.service.SubredditService;
-import me.gaute.redditclonefront.service.UserService;
+import me.gaute.redditclonefront.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Controller
 public class HomeController {
@@ -31,6 +29,9 @@ public class HomeController {
 
     @Autowired
     DeleteService deleteService;
+
+    @Autowired
+    ImageService imageService;
 
     @GetMapping("/")
     public String slash(){
@@ -250,5 +251,53 @@ public class HomeController {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "users";
+    }
+
+    @GetMapping("/testImages")
+    public String images(Model model){
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        return "testImages";
+    }
+
+    @PostMapping("/uploadImage")
+    public String uploadImage(@RequestParam("imageFile") MultipartFile imageFile, @RequestParam String imageName, @RequestParam int user) {
+
+        Optional<User> user1 = userService.getUserById(user);
+        if (!user1.isPresent()) {
+            return "redirect:/home";
+        } else {
+            Image image = new Image();
+            image.setImageName(imageName);
+            image.setOwner(user1.get());
+            try {
+                image.setBytes(imageFile.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("No image?");
+            }
+
+            imageService.saveImage(image);
+
+        }
+        return "redirect:/home";
+    }
+
+    @GetMapping("testImageDisplay")
+    public String imageDisplay(Model model){
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
+        if(user.isPresent()) {
+            List<Image> images1 = imageService.getImageByOwner(user.get().getUsername());
+            List<String> images = new ArrayList<>();
+
+            for (Image image : images1) {
+                byte[] encode = Base64.getEncoder().encode(image.getBytes());
+                images.add(new String(encode, StandardCharsets.UTF_8));
+            }
+            model.addAttribute("images", images);
+            System.out.println("ImageBase64: " +images);
+        }
+        return "testImageDisplay";
     }
 }

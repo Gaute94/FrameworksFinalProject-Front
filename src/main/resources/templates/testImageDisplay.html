@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>TestImageDisplay</title>
+    <style type="text/css">
+        body{
+            background-color:rgb(210, 230, 255)
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container">
+    <div class="col-9" style="margin:auto">
+        <div th:if="${images.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no subreddits available.</div>
+        <div th:if="${!images.isEmpty()}" class="bg-white">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th>Image</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="image : ${images}">
+                    <td><img  th:src="@{'data:image/png;base64,'+${image}}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
