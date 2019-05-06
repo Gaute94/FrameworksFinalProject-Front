@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService{
+public class UserService implements UserDetailsService {
 
     private String BASE_URL = "http://localhost:9003/users";
     private RestTemplate restTemplate = new RestTemplate();
@@ -34,43 +34,43 @@ public class UserService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = Optional.ofNullable(restTemplate.getForObject(BASE_URL+"/username/"+username, User.class));
-        if(!user.isPresent()) throw new UsernameNotFoundException("Not found user with username: " + username);
+        Optional<User> user = Optional.ofNullable(restTemplate.getForObject(BASE_URL + "/username/" + username, User.class));
+        if (!user.isPresent()) throw new UsernameNotFoundException("Not found user with username: " + username);
         return user.get();
     }
 
-    public List<User> getAllUsers(){
-        return  Arrays.stream(
+    public List<User> getAllUsers() {
+        return Arrays.stream(
                 Objects.requireNonNull(restTemplate.getForObject(BASE_URL, User[].class))
         ).collect(Collectors.toList());
     }
 
-    public Optional<User> getUserById(long id){
+    public Optional<User> getUserById(long id) {
         try {
-            User user = restTemplate.getForObject(BASE_URL+"/id/"+id, User.class);
+            User user = restTemplate.getForObject(BASE_URL + "/id/" + id, User.class);
             return Optional.ofNullable(user);
-        } catch(Exception e){
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
 
-    public User getUserByEmail(String email){
-        return restTemplate.getForObject(BASE_URL+"/email/"+email, User.class);
+    public User getUserByEmail(String email) {
+        return restTemplate.getForObject(BASE_URL + "/email/" + email, User.class);
     }
 
-    public User getUserByUsername(String username){
-        return restTemplate.getForObject(BASE_URL+"/username/"+username, User.class);
+    public User getUserByUsername(String username) {
+        return restTemplate.getForObject(BASE_URL + "/username/" + username, User.class);
     }
 
-    public SaveUserResponse saveUser(User newUser){
+    public SaveUserResponse saveUser(User newUser) {
         return restTemplate.postForObject(BASE_URL, newUser, SaveUserResponse.class);
     }
 
-    public void updateUser(long id, User updatedUser){
-        restTemplate.put(BASE_URL+"/"+id, updatedUser);
+    public void updateUser(long id, User updatedUser) {
+        restTemplate.put(BASE_URL + "/" + id, updatedUser);
     }
 
-    public long countUsers(){
+    public long countUsers() {
         List<User> users = getAllUsers();
         return users.size();
     }
@@ -80,23 +80,25 @@ public class UserService implements UserDetailsService{
         restTemplate.delete(BASE_URL+"/"+id);
     }*/
 
-    public void setPassword(User user, String password){
+    public void setPassword(User user, String password) {
         user.setPassword(passwordEncoder().encode(password));
     }
 
-    public Optional<User> getAuthenticatedUser(){
+    public Optional<User> getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Auth: " + auth);
         System.out.println("Name: " + auth.getName());
         return Optional.ofNullable(getUserByUsername(auth.getName()));
     }
 
-    public List<User> getNonDeleted(){
-        return  Arrays.stream(
-                Objects.requireNonNull(restTemplate.getForObject(BASE_URL+"/nonDeleted",  User[].class))
+    public List<User> getNonDeleted() {
+        return Arrays.stream(
+                Objects.requireNonNull(restTemplate.getForObject(BASE_URL + "/nonDeleted", User[].class))
         ).collect(Collectors.toList());
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){ return new BCryptPasswordEncoder(); }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

@@ -7,7 +7,8 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header">
     <a class="navbar-brand" href="/home">Reddit</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -38,18 +39,18 @@
         </ul>
         <form class="form-inline my-2 my-lg-0 mx-auto" th:action="@{/searching}" method="post">
             <div class="input-group input-group">
-                <input type="text"  name="title" id="title" class="form-control" placeholder="Search Reddit">
+                <input type="text" name="title" id="title" class="form-control" placeholder="Search Reddit">
                 <button class="btn btn-success">Search</button>
             </div>
         </form>
-            <div th:if="${user != null}">
-                <form class="form-inline my-2 my-lg-0">
-                    <i class="fa fa-user"></i>  <label th:text="${user.getUsername()}">   </label>
-                    <a class="btn btn-outline-secondary my-2 my-sm-0 mx-5"
-                       type="submit"
-                       th:href="@{/logout}">Logout</a>
-                </form>
-            </div>
+        <div th:if="${user != null}">
+            <form class="form-inline my-2 my-lg-0">
+                <i class="fa fa-user"></i> <label th:text="${user.getUsername()}"> </label>
+                <a class="btn btn-outline-secondary my-2 my-sm-0 mx-5"
+                   type="submit"
+                   th:href="@{/logout}">Logout</a>
+            </form>
+        </div>
     </div>
     <!-- <input class="form-control mx-auto" style="width:35%" type="text" placeholder="Search Reddit"/> -->
 

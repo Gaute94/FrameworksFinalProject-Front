@@ -69,7 +69,9 @@ public class PostController {
         post.setComment(comment);
         post.setOwner(user1.get());
         post.setDate(LocalDateTime.now());
-        if(!imageFile.isEmpty()) {
+        if (!imageFile.isEmpty(
+
+        )) {
             post.setImage(imageService.saveImage(image));
         }
         postService.savePost(post);

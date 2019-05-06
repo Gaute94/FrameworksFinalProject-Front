@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Test</title>
 </head>
 <body>
@@ -13,7 +14,9 @@
 
 <div class="container">
     <div class="col-9" style="margin:auto">
-        <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no posts available.</div>
+        <div th:if="${posts.isEmpty()}" style="width:100%; text-align:center; margin-top:100px">There are currently no
+            posts available.
+        </div>
         <div th:if="${!posts.isEmpty()}">
             <table class="table">
                 <thead class="thead-light">

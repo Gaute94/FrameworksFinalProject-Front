@@ -9,10 +9,11 @@ import me.gaute.redditclonefront.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class SubredditController {
     }
 
     @GetMapping("/r/{subreddit}")
-    public String subreddit(Model model, @PathVariable String subreddit){
+    public String subreddit(Model model, @PathVariable String subreddit) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
@@ -46,22 +47,18 @@ public class SubredditController {
         System.out.println("SubredditTitle: " + subreddit);
         model.addAttribute("subreddit1", subreddit1);
         boolean all = false;
-        if(subreddit.equals("All")){
+        if (subreddit.equals("All")) {
             List<Post> allPosts = postService.getAllPostsByDate();
             model.addAttribute("posts", allPosts);
             all = true;
-        }else{
+        } else {
             List<Post> posts = postService.getPostBySubreddit(subreddit1);
             model.addAttribute("posts", posts);
         }
         model.addAttribute("all", all);
         boolean subscribed = false;
-        if(user.isPresent()) {
-            if (user.get().getSubreddits().contains(subreddit1)) {
-                subscribed = true;
-            }else{
-                subscribed = false;
-            }
+        if (user.isPresent()) {
+            subscribed = user.get().getSubreddits().contains(subreddit1);
         }
         model.addAttribute("subscribed", subscribed);
         System.out.println("Subreddit: " + subreddit1);
@@ -71,25 +68,21 @@ public class SubredditController {
     }
 
     @GetMapping("/u")
-    public String u(Model model){
+    public String u(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "u";
     }
 
     @GetMapping("/u/{username}")
-    public String userProfile(Model model, @PathVariable String username){
+    public String userProfile(Model model, @PathVariable String username) {
         Optional<User> user = userService.getAuthenticatedUser();
         boolean followed = false;
-        if(user.isPresent()){
-            if(username.equals(user.get().getUsername())){
+        if (user.isPresent()) {
+            if (username.equals(user.get().getUsername())) {
                 return "redirect:/myAccount";
             }
-            if(user.get().getFollowing().contains(username)){
-                followed = true;
-            }else{
-                followed=false;
-            }
+            followed = user.get().getFollowing().contains(username);
 
         }
         model.addAttribute("followed", followed);
@@ -99,7 +92,7 @@ public class SubredditController {
         model.addAttribute("posts", posts);
         model.addAttribute("username", username);
         System.out.println("username: " + username);
-        for(Post post : posts){
+        for (Post post : posts) {
             System.out.println("Title" + post.getTitle());
             System.out.println("Owner" + post.getOwner());
         }
@@ -107,9 +100,9 @@ public class SubredditController {
     }
 
     @PostMapping("/unfollow/{username}")
-    public String unfollow(@PathVariable String username){
+    public String unfollow(@PathVariable String username) {
         Optional<User> user = userService.getAuthenticatedUser();
-        if(user.isPresent()){
+        if (user.isPresent()) {
             user.get().getFollowing().remove(username);
             userService.updateUser(user.get().getId(), user.get());
         }
@@ -117,18 +110,17 @@ public class SubredditController {
     }
 
 
-
     @GetMapping("/createSubreddit")
-    public String createSubreddit(Model model){
+    public String createSubreddit(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         return "createSubreddit";
     }
 
     @PostMapping("/createSubreddit")
-    public String createSubreddit(@RequestParam int user, @RequestParam String title, @RequestParam String rules, @RequestParam String description){
+    public String createSubreddit(@RequestParam int user, @RequestParam String title, @RequestParam String rules, @RequestParam String description) {
         Optional<User> user1 = userService.getUserById(user);
-        if(!user1.isPresent()){
+        if (!user1.isPresent()) {
             return "redirect:/home";
         }
         Subreddit subreddit = new Subreddit();

@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>CreateSubreddit</title>
 </head>
 <body>
@@ -11,7 +12,7 @@
     <div class="col-sm-6 my-3 " style="margin:auto">
         <form method="POST" th:action="@{/createSubreddit}">
             <div class="form-group">
-                <input type="text"  name="title" class="form-control" placeholder="Title">
+                <input type="text" name="title" class="form-control" placeholder="Title">
             </div>
             <div class="form-group">
                 <input type="text" name="description" class="form-control" placeholder="Description">
@@ -20,7 +21,7 @@
                 <input type="text" name="rules" class="form-control" placeholder="Rules">
             </div>
             <div class="form-group">
-                <input type="hidden" th:value="${user.id}"  name="user" class="form-control" placeholder="user">
+                <input type="hidden" th:value="${user.id}" name="user" class="form-control" placeholder="user">
             </div>
             <button class="btn btn-primary" style="width:100%" type="submit">Create</button>
         </form>

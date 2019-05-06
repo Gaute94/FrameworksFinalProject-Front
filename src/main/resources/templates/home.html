@@ -2,19 +2,22 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Home</title>
     <style type="text/css">
-        body{
-            background-color:rgb(210, 230, 255)
-        }
-        .upvote:hover{
-            color:green;
+        body {
+            background-color: rgb(210, 230, 255)
         }
 
-        .downvote:hover{
-            color:red;
+        .upvote:hover {
+            color: green;
+        }
+
+        .downvote:hover {
+            color: red;
         }
     </style>
 </head>
@@ -26,12 +29,13 @@
         <div class="col-md-8 my-3">
             <div th:each="post : ${posts}" class="d-flex flex-nowrap bg-white my-2 rounded">
                 <div style="width:40px;">
-                    <span style="display:block; width:100%" class="text-align-center " >
+                    <span style="display:block; width:100%" class="text-align-center ">
                          <form th:action="@{'/vote/' + ${post.id}}" method="post">
                             <input type="hidden" name="home" th:value="home">
                             <input type="hidden" name="subreddit" th:value="${post.subreddit.getTitle()}">
                             <input type="hidden" name="vote" th:value="upvote">
-                            <button type="submit" class="btn bg-white upvote" style="width:100%" th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-up"></i></button>
+                            <button type="submit" class="btn bg-white upvote" style="width:100%"
+                                    th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-up"></i></button>
                          </form>
                     </span>
                     <span style="width:100%; display:block" class="text-align-center ">
@@ -42,22 +46,29 @@
                             <input type="hidden" name="home" th:value="home">
                             <input type="hidden" name="subreddit" th:value="${post.subreddit.getTitle()}">
                             <input type="hidden" name="vote" th:value="downvote">
-                            <button type="submit" class="btn bg-white downvote" style="width:100%" th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-down"></i></button>
+                            <button type="submit" class="btn bg-white downvote" style="width:100%"
+                                    th:disabled="${post.getUserLikes().contains(user)}"><i
+                                    class="fas fa-angle-down"></i></button>
                         </form>
                     </span>
                 </div>
                 <div class="bg-white mb-2 rounded">
-                    <a th:href="@{'/r/' + ${post.subreddit.getTitle()}}" class="font-weight-bold small" style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
+                    <a th:href="@{'/r/' + ${post.subreddit.getTitle()}}" class="font-weight-bold small"
+                       style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
                     <div class="font-weight-light small" style="display:inline-block">Posted by</div>
                     <form action="/userProfile" method="post" class="py-2 bg-white" style="display:inline-block">
                         <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
                     </form>
-                    <a th:href="@{'/u/' + ${post.owner.getUName()}}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
-                    <div class="font-weight-light small" style="display:inline-block" th:text="${#temporals.format(post.date, 'dd/MMM/yyyy HH:mm')}"></div>
+                    <a th:href="@{'/u/' + ${post.owner.getUName()}}" style="display:inline-block">
+                        <div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div>
+                    </a>
+                    <div class="font-weight-light small" style="display:inline-block"
+                         th:text="${#temporals.format(post.date, 'dd/MMM/yyyy HH:mm')}"></div>
 
                     <h4 th:text="${post.title}"></h4>
                     <div th:text="${post.comment}" style="word-wrap:normal; width:100%; max-width:100%"></div>
-                    <img class="pr-5 mt-2" style="max-width:100%" th:if="${post.image != null}" th:src="@{'data:image/png;base64,'+${post.image.getBase64()}}"/>
+                    <img class="pr-5 mt-2" style="max-width:100%" th:if="${post.image != null}"
+                         th:src="@{'data:image/png;base64,'+${post.image.getBase64()}}"/>
 
                 </div>
             </div>
@@ -70,7 +81,9 @@
         </div>-->
         <div class="col-md-4 my-3">
             <div class="bg-primary text-white text-center py-2 rounded-top">HOME</div>
-            <div class="p-2 bg-white">Your personal Reddit frontpage. Come here to check in with your favorite communities.</div>
+            <div class="p-2 bg-white">Your personal Reddit frontpage. Come here to check in with your favorite
+                communities.
+            </div>
             <form action="/createSubreddit" method="get" class="px-2 py-1 bg-white">
                 <button type="submit" class="btn btn-primary" style="width:100%">Create Community</button>
             </form>

@@ -1,11 +1,17 @@
 package me.gaute.redditclonefront.controller;
 
-import me.gaute.redditclonefront.model.*;
+import me.gaute.redditclonefront.model.Image;
+import me.gaute.redditclonefront.model.Post;
+import me.gaute.redditclonefront.model.Subreddit;
+import me.gaute.redditclonefront.model.User;
 import me.gaute.redditclonefront.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,34 +37,34 @@ public class HomeController {
     ImageService imageService;
 
     @GetMapping("/")
-    public String slash(){
+    public String slash() {
         return "redirect:/home";
     }
 
     @GetMapping("/home")
-    public String home(Model model){
+    public String home(Model model) {
         /*List<Post> posts = postService.getAllPosts();
         model.addAttribute("posts", posts);*/
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             List<Post> posts = postService.getAllPostsByDate();
             model.addAttribute("posts", posts);
             List<Subreddit> subreddits = subredditService.getAllSubreddits();
             model.addAttribute("subreddits", subreddits);
-        }else{
+        } else {
             List<Subreddit> subreddits = user.get().getSubreddits();
             List<String> following = user.get().getFollowing();
             List<User> followingUsers = new ArrayList<>();
-            for(String username : following){
+            for (String username : following) {
                 followingUsers.add(userService.getUserByUsername(username));
             }
-            if(subreddits.isEmpty() && following.isEmpty()){
+            if (subreddits.isEmpty() && following.isEmpty()) {
                 List<Post> posts = postService.getAllPostsByDate();
                 model.addAttribute("posts", posts);
                 List<Subreddit> subreddits1 = subredditService.getAllSubreddits();
                 model.addAttribute("subreddits", subreddits1);
-            }else {
+            } else {
                 List<Post> posts = postService.getAllSubscribedAndFollowed(subreddits, followingUsers);
                 model.addAttribute("posts", posts);
             }
@@ -70,16 +76,15 @@ public class HomeController {
     }
 
 
-
     @GetMapping("/register")
-    public String signup(Model model){
+    public String signup(Model model) {
         model.addAttribute("createAdmin", userService.countUsers() == 0);
         System.out.println("Entered register");
         return "register";
     }
 
     @GetMapping("/register/exists")
-    public String register(Model model){
+    public String register(Model model) {
         model.addAttribute("createAdmin", userService.countUsers() == 0);
         System.out.println("Entered register");
         String exists = "Already a user with that username or email address";
@@ -89,14 +94,14 @@ public class HomeController {
     }
 
     @PostMapping("/processRegistration")
-    public String register(@ModelAttribute("user") User user){
+    public String register(@ModelAttribute("user") User user) {
         userService.setPassword(user, user.getPassword());
-        if(userService.countUsers() == 0){
+        if (userService.countUsers() == 0) {
             user.setRole("ROLE_ADMIN");
         }
-        if(userService.saveUser(user).isOk()){
+        if (userService.saveUser(user).isOk()) {
             return "redirect:/home";
-        }else{
+        } else {
 
             return "redirect:/register/exists";
         }
@@ -110,9 +115,9 @@ public class HomeController {
     }
 
     @GetMapping("/myAccount")
-    public String myAccount(Model model){
+    public String myAccount(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             return "redirect:/home";
         }
         user.ifPresent(user1 -> model.addAttribute("user", user1));
@@ -127,14 +132,14 @@ public class HomeController {
     }
 
     @GetMapping("/changePassword")
-    public String changePassword(Model model){
+    public String changePassword(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         return "changePassword";
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(Model model, @RequestParam String username){
+    public String changePassword(Model model, @RequestParam String username) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         model.addAttribute("username", username);
@@ -142,7 +147,7 @@ public class HomeController {
     }
 
     @PostMapping("/passwordChange")
-    public String passwordChange(@RequestParam String password, @RequestParam String username){
+    public String passwordChange(@RequestParam String password, @RequestParam String username) {
         User user = userService.getUserByUsername(username);
         userService.setPassword(user, password);
         userService.updateUser(user.getId(), user);
@@ -152,17 +157,17 @@ public class HomeController {
 
 
     @GetMapping("/deleteAccount")
-    public String deleteAccount(Model model){
+    public String deleteAccount(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
-        if(user.isPresent()){
+        if (user.isPresent()) {
             System.out.println("ROLE: " + user.get().getRole());
         }
         return "deleteAccount";
     }
 
     @PostMapping("/deleteAccount")
-    public String deleteAccount(Model model, @RequestParam String username){
+    public String deleteAccount(Model model, @RequestParam String username) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         model.addAttribute("username", username);
@@ -170,13 +175,13 @@ public class HomeController {
     }
 
     @PostMapping("/accountDelete")
-    public String accountDelete(@RequestParam String confirmed, @RequestParam String username){
+    public String accountDelete(@RequestParam String confirmed, @RequestParam String username) {
         User user = userService.getUserByUsername(username);
         System.out.println("DELETE user: " + userService.getUserByUsername(username));
         System.out.println("DELETE user ID: " + user.getId());
-        if(!confirmed.equals("true")){
+        if (!confirmed.equals("true")) {
             return "redirect:/myAccount";
-        }else {
+        } else {
             deleteService.deleteUserByUsername(username);
             return "redirect:/home";
         }
@@ -184,19 +189,19 @@ public class HomeController {
 
 
     @PostMapping("/searching")
-    public String searchReddit(@RequestParam("title") String title, Model model){
-        if(title.equals("")) return "redirect:/home";
-            model.addAttribute("subreddits", subredditService.search(title));
+    public String searchReddit(@RequestParam("title") String title, Model model) {
+        if (title.equals("")) return "redirect:/home";
+        model.addAttribute("subreddits", subredditService.search(title));
 
-            model.addAttribute("posts", postService.search(title));
+        model.addAttribute("posts", postService.search(title));
 
         return "search";
     }
 
 
     @GetMapping("/searching")
-    public String searchBook(@RequestParam("title") String title, Model model){
-        if(title.equals("")) return "redirect:/home";
+    public String searchBook(@RequestParam("title") String title, Model model) {
+        if (title.equals("")) return "redirect:/home";
         model.addAttribute("subreddits", subredditService.search(title));
         model.addAttribute("posts", postService.search(title));
 
@@ -204,13 +209,13 @@ public class HomeController {
     }
 
     @PostMapping("/follow")
-    public String follow(@RequestParam String username){
+    public String follow(@RequestParam String username) {
         Optional<User> user = userService.getAuthenticatedUser();
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             return "redirect:/home";
         }
 
-        if(user.get().getFollowing().contains(username)){
+        if (user.get().getFollowing().contains(username)) {
             return "redirect:/home";
         }
 
@@ -220,16 +225,16 @@ public class HomeController {
     }
 
     @PostMapping("/subscribe")
-    public String subscribe(@RequestParam String subreddit){
+    public String subscribe(@RequestParam String subreddit) {
         System.out.println("ENTERED SUBSCRIBE");
         System.out.println("SUBREDDIT: " + subreddit);
         Optional<User> user = userService.getAuthenticatedUser();
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             return "redirect:/home";
         }
         //User user1 = user.get();
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
-        if(user.get().getSubreddits().contains(subreddit1)){
+        if (user.get().getSubreddits().contains(subreddit1)) {
             return "redirect:/home";
         }
         System.out.println("Subreddit1: " + subreddit1);
@@ -243,9 +248,9 @@ public class HomeController {
     }
 
     @PostMapping("/unsubscribe")
-    public String unsubscribe(@RequestParam String subreddit){
+    public String unsubscribe(@RequestParam String subreddit) {
         Optional<User> user = userService.getAuthenticatedUser();
-        if(user.isPresent()){
+        if (user.isPresent()) {
             user.get().getSubreddits().remove(subredditService.getSubredditByTitle(subreddit));
             userService.updateUser(user.get().getId(), user.get());
         }
@@ -253,7 +258,7 @@ public class HomeController {
     }
 
     @GetMapping("/users")
-    public String users(Model model){
+    public String users(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
 
@@ -264,7 +269,7 @@ public class HomeController {
     }
 
     @GetMapping("/testImages")
-    public String images(Model model){
+    public String images(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
         return "testImages";
@@ -294,10 +299,10 @@ public class HomeController {
     }
 
     @GetMapping("testImageDisplay")
-    public String imageDisplay(Model model){
+    public String imageDisplay(Model model) {
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             List<Image> images1 = imageService.getImageByOwner(user.get().getUsername());
             List<String> images = new ArrayList<>();
 
@@ -306,7 +311,7 @@ public class HomeController {
                 images.add(new String(encode, StandardCharsets.UTF_8));
             }
             model.addAttribute("images", images);
-            System.out.println("ImageBase64: " +images);
+            System.out.println("ImageBase64: " + images);
         }
         return "testImageDisplay";
     }

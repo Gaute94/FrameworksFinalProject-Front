@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import me.gaute.redditclonefront.model.Subreddit;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +34,7 @@ public class User implements UserDetails {
         authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
     }
+
     @Override
     public String getUsername() {
         return username;
@@ -59,11 +60,11 @@ public class User implements UserDetails {
         return true;
     }
 
-    public String getRole(){
+    public String getRole() {
         return this.role;
     }
 
-    public String getUName(){
+    public String getUName() {
         return username;
     }
 
