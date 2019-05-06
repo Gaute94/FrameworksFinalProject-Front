@@ -1,9 +1,6 @@
 package me.gaute.redditclonefront.controller;
 
-import me.gaute.redditclonefront.model.Image;
-import me.gaute.redditclonefront.model.Post;
-import me.gaute.redditclonefront.model.Subreddit;
-import me.gaute.redditclonefront.model.User;
+import me.gaute.redditclonefront.model.*;
 import me.gaute.redditclonefront.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,29 +41,27 @@ public class HomeController {
         model.addAttribute("posts", posts);*/
         Optional<User> user = userService.getAuthenticatedUser();
         user.ifPresent(user1 -> model.addAttribute("user", user1));
-
-        if(user.isPresent()){
-            List<Subreddit> subreddits = user.get().getSubreddits();
-            model.addAttribute("subreddits", subreddits);
-            List<Post> posts = new ArrayList<>();
-            for(Subreddit subreddit : subreddits){
-                List<Post> subPosts = postService.getPostBySubreddit(subreddit);
-                Collections.reverse(subPosts);
-                posts.addAll(subPosts);
-            }
-            model.addAttribute("posts", posts);
-        }else{
-            List<Post> posts = postService.getAllPosts();
-            Collections.reverse(posts);
+        if(!user.isPresent()){
+            List<Post> posts = postService.getAllPostsByDate();
             model.addAttribute("posts", posts);
             List<Subreddit> subreddits = subredditService.getAllSubreddits();
             model.addAttribute("subreddits", subreddits);
+        }else{
+            List<Subreddit> subreddits = user.get().getSubreddits();
+            List<User> following = user.get().getFollowing();
+            if(subreddits.isEmpty() && following.isEmpty()){
+                List<Post> posts = postService.getAllPostsByDate();
+                model.addAttribute("posts", posts);
+                List<Subreddit> subreddits1 = subredditService.getAllSubreddits();
+                model.addAttribute("subreddits", subreddits1);
+            }else {
+                List<Post> posts = postService.getAllSubscribedAndFollowed(subreddits, following);
+                model.addAttribute("posts", posts);
+            }
         }
 
         System.out.println("user: " + user);
         //model.addAttribute("subreddits", new ArrayList<Subreddit>());
-
-
         return "home";
     }
 
@@ -184,6 +179,17 @@ public class HomeController {
     }
 
 
+    @PostMapping("/searching")
+    public String searchReddit(@RequestParam("title") String title, Model model){
+        if(title.equals("")) return "redirect:/home";
+            model.addAttribute("subreddits", subredditService.search(title));
+
+            model.addAttribute("posts", postService.search(title));
+
+        return "search";
+    }
+
+
     @GetMapping("/searching")
     public String searchBook(@RequestParam("title") String title, Model model){
         if(title.equals("")) return "redirect:/home";
@@ -245,10 +251,11 @@ public class HomeController {
 
     @GetMapping("/users")
     public String users(Model model){
-        Optional<User> authUser = userService.getAuthenticatedUser();
-        authUser.ifPresent(user1 -> model.addAttribute("authUser", user1));
+        Optional<User> user = userService.getAuthenticatedUser();
+        user.ifPresent(user1 -> model.addAttribute("user", user1));
 
-        List<User> users = userService.getAllUsers();
+        List<User> users = userService.getNonDeleted();
+        System.out.println("USERS: " + users);
         model.addAttribute("users", users);
         return "users";
     }

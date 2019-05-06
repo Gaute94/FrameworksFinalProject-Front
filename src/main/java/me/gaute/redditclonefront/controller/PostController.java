@@ -1,8 +1,10 @@
 package me.gaute.redditclonefront.controller;
 
+import me.gaute.redditclonefront.model.Image;
 import me.gaute.redditclonefront.model.Post;
 import me.gaute.redditclonefront.model.Subreddit;
 import me.gaute.redditclonefront.model.User;
+import me.gaute.redditclonefront.service.ImageService;
 import me.gaute.redditclonefront.service.PostService;
 import me.gaute.redditclonefront.service.SubredditService;
 import me.gaute.redditclonefront.service.UserService;
@@ -13,7 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +34,9 @@ public class PostController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ImageService imageService;
+
     @GetMapping("/submit")
     public String submit(Model model) {
         List<Subreddit> subreddits = subredditService.getAllSubreddits();
@@ -39,18 +47,31 @@ public class PostController {
     }
 
     @PostMapping("/createPost")
-    public String addPost(@RequestParam("subreddit.title") String subreddit, @RequestParam String title, @RequestParam String comment, @RequestParam int user) {
+    public String addPost(@RequestParam(value = "imageFile", required = false) MultipartFile imageFile, @RequestParam("subreddit.title") String subreddit, @RequestParam String title, @RequestParam String comment, @RequestParam int user) {
         System.out.println("SUBREDDIT: " + subreddit);
         Optional<User> user1 = userService.getUserById(user);
         Subreddit subreddit1 = subredditService.getSubredditByTitle(subreddit);
         if (!user1.isPresent()) {
             return "redirect:/home";
         }
+        Image image = new Image();
+        image.setImageName("");
+        image.setOwner(user1.get());
+        try {
+            image.setBytes(imageFile.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("No image?");
+        }
         Post post = new Post();
         post.setSubreddit(subreddit1);
         post.setTitle(title);
         post.setComment(comment);
         post.setOwner(user1.get());
+        post.setDate(LocalDateTime.now());
+        if(!imageFile.isEmpty()) {
+            post.setImage(imageService.saveImage(image));
+        }
         postService.savePost(post);
         return "redirect:/home";
     }

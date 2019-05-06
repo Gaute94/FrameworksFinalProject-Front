@@ -3,6 +3,7 @@ package me.gaute.redditclonefront.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,5 +16,7 @@ public class Post {
     private User owner;
     private int likes;
     private List<User> userLikes;
+    private Image image;
+    private LocalDateTime date;
 
 }

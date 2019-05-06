@@ -31,8 +31,12 @@
             <li class="nav-item" th:if="${user == null}">
                 <a class="nav-link" th:href="@{/register}">Register</a>
             </li>
+            <li class="nav-item" th:if="${user!=null && user.getRole().equals('ROLE_ADMIN')}">
+                <a class="nav-link" th:href="@{/users}">Manage Users</a>
+            </li>
+
         </ul>
-        <form class="form-inline my-2 my-lg-0 mx-auto" th:action="@{/searching}" method="get">
+        <form class="form-inline my-2 my-lg-0 mx-auto" th:action="@{/searching}" method="post">
             <div class="input-group input-group">
                 <input type="text"  name="title" id="title" class="form-control" placeholder="Search Reddit">
                 <button class="btn btn-success">Search</button>

@@ -45,16 +45,16 @@ public class SubredditController {
         model.addAttribute("subredditTitle", subreddit);
         System.out.println("SubredditTitle: " + subreddit);
         model.addAttribute("subreddit1", subreddit1);
+        boolean all = false;
         if(subreddit.equals("All")){
-            List<Post> allPosts = postService.getAllPosts();
-            Collections.reverse(allPosts);
+            List<Post> allPosts = postService.getAllPostsByDate();
             model.addAttribute("posts", allPosts);
+            all = true;
         }else{
             List<Post> posts = postService.getPostBySubreddit(subreddit1);
-            Collections.reverse(posts);
             model.addAttribute("posts", posts);
-
         }
+        model.addAttribute("all", all);
         boolean subscribed = false;
         if(user.isPresent()) {
             if (user.get().getSubreddits().contains(subreddit1)) {

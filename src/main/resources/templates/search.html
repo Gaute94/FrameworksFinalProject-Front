@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
     <title>Search</title>
     <style type="text/css">
@@ -22,44 +23,51 @@
             </div>
             <div th:if="${!subreddits.empty}">
                 <table class="table table-bordered">
-                    <thead class="thead-light">
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Rules</th>
-                        <th>Owner</th>
-                    </tr>
-                    </thead>
                     <tbody>
+
                     <tr th:each="subreddit : ${subreddits}">
-                        <td th:text="${subreddit.title}"></td>
-                        <td th:text="${subreddit.description}"></td>
-                        <td th:text="${subreddit.rules}"></td>
-                        <td th:text="${subreddit.owner.getUName()}"></td>
+                        <td><a th:text="${subreddit.title}" th:href="@{'/r/' + ${subreddit.title}}"></a></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <h3>Posts</h3>
             <div th:if="${!posts.empty}">
-                <table class="table table-bordered">
-                    <thead class="thead-light">
-                    <tr>
-                        <th>Subreddit</th>
-                        <th>Title</th>
-                        <th>Comment</th>
-                        <th>Owner</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="post : ${posts}">
-                        <td th:text="${post.subreddit.title}"></td>
-                        <td th:text="${post.title}"></td>
-                        <td th:text="${post.comment}"></td>
-                        <td th:text="${post.owner.getUName()}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div th:each="post : ${posts}" class="d-flex flex-nowrap bg-white my-2 rounded">
+                    <div style="width:40px;">
+                    <span style="display:block; width:100%" class="text-align-center " >
+                         <form th:action="@{'/vote/' + ${post.id}}" method="post">
+                            <input type="hidden" name="home" th:value="subreddit">
+                            <input type="hidden" name="subreddit" th:value="${subredditTitle}">
+                            <input type="hidden" name="vote" th:value="upvote">
+                            <button type="submit" class="btn bg-white upvote" style="width:100%" th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-up"></i></button>
+                         </form>
+                    </span>
+                        <span style="width:100%; display:block" class="text-align-center ">
+                        <div th:text="${post.likes}" style="width:100%; text-align:center"></div>
+                    </span>
+                        <span style="display:block;" class="text-align-center">
+                        <form th:action="@{'/vote/' + ${post.id}}" method="post">
+                            <input type="hidden" name="home" th:value="subreddit">
+                            <input type="hidden" name="subreddit" th:value="${subredditTitle}">
+                            <input type="hidden" name="vote" th:value="downvote">
+                            <button type="submit" class="btn bg-white downvote" style="width:100%" th:disabled="${post.getUserLikes().contains(user)}"><i class="fas fa-angle-down"></i></button>
+                        </form>
+                    </span>
+                    </div>
+                    <div class="mb-2 rounded flex-grow-1 pl-2" >
+                        <a th:href="@{'/r/' + ${post.subreddit.getTitle()}}" class="font-weight-bold small" style="display:inline-block" th:text="'r/' + ${post.subreddit.getTitle()}"></a>
+                        <div class="font-weight-light small" style="display:inline-block">Posted by</div>
+                        <!--<form th:action="@{'/u/' + ${post.owner.getUName()}}" method="get" style="display:inline-block">
+                            <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
+                            <input type="submit" class="btn btn-outline-primary" th:text="${post.owner.getUName()}">
+                        </form>-->
+                        <a th:href="@{'/u/' + ${post.owner.getUName()}}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
+                        <h4 th:text="${post.title}"></h4>
+                        <span th:text="${post.comment}" style="word-wrap:normal; width:100%; max-width:100%" ></span>
+                        <img class="pr-5 mt-2" style="max-width:100%" th:if="${post.image != null}" th:src="@{'data:image/png;base64,'+${post.image.getBase64()}}"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

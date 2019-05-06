@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
     <title>myAccount</title>
     <style type="text/css">
         body{
@@ -24,7 +26,7 @@
                             <input type="hidden" name="home" th:value="subreddit">
                             <input type="hidden" name="subreddit" th:value="${subredditTitle}">
                             <input type="hidden" name="vote" th:value="upvote">
-                            <button type="submit" class="btn bg-white upvote" style="width:100%"><i class="fas fa-angle-up"></i></button>
+                            <button type="submit" class="btn bg-white upvote" style="width:100%" disabled><i class="fas fa-angle-up"></i></button>
                          </form>
                     </span>
                     <span style="width:100%; display:block" class="text-align-center ">
@@ -35,7 +37,7 @@
                             <input type="hidden" name="home" th:value="subreddit">
                             <input type="hidden" name="subreddit" th:value="${subredditTitle}">
                             <input type="hidden" name="vote" th:value="downvote">
-                            <button type="submit" class="btn bg-white downvote" style="width:100%"><i class="fas fa-angle-down"></i></button>
+                            <button type="submit" class="btn bg-white downvote" style="width:100%" disabled><i class="fas fa-angle-down"></i></button>
                         </form>
                     </span>
                 </div>

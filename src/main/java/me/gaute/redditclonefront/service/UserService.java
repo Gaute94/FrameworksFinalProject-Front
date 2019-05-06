@@ -91,6 +91,12 @@ public class UserService implements UserDetailsService{
         return Optional.ofNullable(getUserByUsername(auth.getName()));
     }
 
+    public List<User> getNonDeleted(){
+        return  Arrays.stream(
+                Objects.requireNonNull(restTemplate.getForObject(BASE_URL+"/nonDeleted",  User[].class))
+        ).collect(Collectors.toList());
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(){ return new BCryptPasswordEncoder(); }
 }

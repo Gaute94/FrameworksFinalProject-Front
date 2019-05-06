@@ -9,6 +9,13 @@
         body{
             background-color:rgb(210, 230, 255)
         }
+        .upvote:hover{
+            color:green;
+        }
+
+        .downvote:hover{
+            color:red;
+        }
     </style>
 </head>
 <body>
@@ -46,8 +53,12 @@
                         <input type="hidden" name="userProfile" th:value="${post.owner.getUName()}">
                     </form>
                     <a th:href="@{'/u/' + ${post.owner.getUName()}}" style="display:inline-block"><div class="font-weight-light small" th:text="'u/' + ${post.owner.getUName()}"></div></a>
+                    <div class="font-weight-light small" style="display:inline-block" th:text="${#temporals.format(post.date, 'dd/MMM/yyyy HH:mm')}"></div>
+
                     <h4 th:text="${post.title}"></h4>
-                    <div th:text="${post.comment}"></div>
+                    <div th:text="${post.comment}" style="word-wrap:normal; width:100%; max-width:100%"></div>
+                    <img class="pr-5 mt-2" style="max-width:100%" th:if="${post.image != null}" th:src="@{'data:image/png;base64,'+${post.image.getBase64()}}"/>
+
                 </div>
             </div>
         </div>
