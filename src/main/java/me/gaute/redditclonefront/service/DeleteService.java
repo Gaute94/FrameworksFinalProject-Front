@@ -5,7 +5,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class DeleteService {
-    private String BASE_URL = "http://localhost:9003/delete";
+    private String BASE_URL = "http://reddit-back:9003/delete";
     private RestTemplate restTemplate = new RestTemplate();
 
     public void deleteUserByUsername(String username) {

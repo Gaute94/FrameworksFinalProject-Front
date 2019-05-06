@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class SubredditService {
 
-    private String BASE_URL = "http://localhost:9003/subreddits";
+    private String BASE_URL = "http://reddit-back:9003/subreddits";
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<Subreddit> getAllSubreddits() {

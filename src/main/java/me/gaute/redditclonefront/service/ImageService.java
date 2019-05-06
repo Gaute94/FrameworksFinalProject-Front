@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class ImageService {
 
-    private String BASE_URL = "http://localhost:9003/images";
+    private String BASE_URL = "http://reddit-back:9003/images";
     private RestTemplate restTemplate = new RestTemplate();
 
     public List<Image> getAllImages() {

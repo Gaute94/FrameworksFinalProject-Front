@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService {
 
-    private String BASE_URL = "http://localhost:9003/users";
+    private String BASE_URL = "http://reddit-back:9003/users";
     private RestTemplate restTemplate = new RestTemplate();
     /*@Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
