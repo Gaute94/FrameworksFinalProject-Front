@@ -19,7 +19,7 @@ public class User implements UserDetails {
     private String password;
     private String role;
     private List<Subreddit> subreddits;
-    private List<User> following;
+    private List<String> following;
 
     public User(String username, String email, String password, String role) {
         this.username = username;

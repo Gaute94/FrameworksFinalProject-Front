@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="row my-2">
-        <div class="col-sm-6" style="margin:auto">
+        <div class="col-sm-9" style="margin:auto">
             <form method="post" th:action="@{/accountDelete}">
                 <div class="form-group" th:if="${user.role == 'ROLE_ADMIN'}">
                     <select type="text" name="username" class="form-control">
@@ -28,11 +28,11 @@
                 </div>
                 <input type="hidden" name="confirmed" value="true">
                 <button type="submit" class="btn btn-success " style="width:100%">Yes</button>
+                <a href="/myAccount" class="btn btn-danger mt-2" style="width:100%">No</a>
             </form>
+
         </div>
-        <div class="col-sm-6" style="margin:auto">
-            <a href="/myAccount" class="btn btn-danger" style="width:100%">No</a>
-        </div>
+
     </div>
 </div>
 

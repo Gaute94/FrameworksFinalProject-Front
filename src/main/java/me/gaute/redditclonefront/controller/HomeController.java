@@ -48,14 +48,18 @@ public class HomeController {
             model.addAttribute("subreddits", subreddits);
         }else{
             List<Subreddit> subreddits = user.get().getSubreddits();
-            List<User> following = user.get().getFollowing();
+            List<String> following = user.get().getFollowing();
+            List<User> followingUsers = new ArrayList<>();
+            for(String username : following){
+                followingUsers.add(userService.getUserByUsername(username));
+            }
             if(subreddits.isEmpty() && following.isEmpty()){
                 List<Post> posts = postService.getAllPostsByDate();
                 model.addAttribute("posts", posts);
                 List<Subreddit> subreddits1 = subredditService.getAllSubreddits();
                 model.addAttribute("subreddits", subreddits1);
             }else {
-                List<Post> posts = postService.getAllSubscribedAndFollowed(subreddits, following);
+                List<Post> posts = postService.getAllSubscribedAndFollowed(subreddits, followingUsers);
                 model.addAttribute("posts", posts);
             }
         }
@@ -117,7 +121,7 @@ public class HomeController {
         List<Post> posts = postService.getPostByOwner(user.get().getUsername());
         Collections.reverse(posts);
         model.addAttribute("posts", posts);
-        List<User> following = user.get().getFollowing();
+        List<String> following = user.get().getFollowing();
         model.addAttribute("following", following);
         return "myAccount";
     }
@@ -206,12 +210,11 @@ public class HomeController {
             return "redirect:/home";
         }
 
-        User user1 = userService.getUserByUsername(username);
-        if(user.get().getFollowing().contains(user1)){
+        if(user.get().getFollowing().contains(username)){
             return "redirect:/home";
         }
 
-        user.get().getFollowing().add(user1);
+        user.get().getFollowing().add(username);
         userService.updateUser(user.get().getId(), user.get());
         return "redirect:/u/" + username;
     }
@@ -307,4 +310,5 @@ public class HomeController {
         }
         return "testImageDisplay";
     }
+
 }

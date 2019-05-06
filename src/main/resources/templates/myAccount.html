@@ -59,7 +59,7 @@
             <!--<div class="text-center py-1 font-weight-bold bg-white  " ></div>-->
             <span class="p-2">Following:</span>
             <div th:each="follow : ${following}" class="d-flex flex-nowrap bg-white my-2 rounded p-2">
-                <a th:href="@{'/u/' + ${follow.getUName()}}" th:text="${follow.getUName()}"></a>
+                <a th:href="@{'/u/' + ${follow}}" th:text="${follow}"></a>
             </div>
             <div class="p-2 bg-white rounded-bottom">
                 <a class="btn btn-primary" th:href="@{/submit}" style="width:100%">Create Post</a>

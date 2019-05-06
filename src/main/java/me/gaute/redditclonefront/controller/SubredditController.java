@@ -85,7 +85,7 @@ public class SubredditController {
             if(username.equals(user.get().getUsername())){
                 return "redirect:/myAccount";
             }
-            if(user.get().getFollowing().contains(userService.getUserByUsername(username))){
+            if(user.get().getFollowing().contains(username)){
                 followed = true;
             }else{
                 followed=false;
@@ -110,7 +110,7 @@ public class SubredditController {
     public String unfollow(@PathVariable String username){
         Optional<User> user = userService.getAuthenticatedUser();
         if(user.isPresent()){
-            user.get().getFollowing().remove(userService.getUserByUsername(username));
+            user.get().getFollowing().remove(username);
             userService.updateUser(user.get().getId(), user.get());
         }
         return "redirect:/u/" + username;
